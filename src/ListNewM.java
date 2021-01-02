@@ -188,5 +188,5 @@ public class ListNewM {
 	public static int getNoSubs() {
 		return subs;
 	}
-	
+
 }

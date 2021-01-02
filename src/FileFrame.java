@@ -43,7 +43,7 @@ public class FileFrame {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JButton btnHome = new JButton("Home");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -53,7 +53,7 @@ public class FileFrame {
 		});
 		btnHome.setBounds(323, 218, 97, 25);
 		frame.getContentPane().add(btnHome);
-		
+
 		JLabel lblLabel = new JLabel("Attendance List");
 		lblLabel.setFont(new Font("Tahoma", Font.BOLD, 26));
 		lblLabel.setBounds(10, 10, 422, 32);
@@ -66,7 +66,7 @@ public class FileFrame {
 			lblLabel.setText("Exam Qualification List");
 		else if(s == "E-Mail")
 			lblLabel.setText("Email List");
-		
+
 		JButton btnExistFile = new JButton("Existing File");
 		btnExistFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,32 +76,32 @@ public class FileFrame {
 				else if(s=="Marks")
 					FileMarks.readData();
 				else if(s=="Exam")
-					FileAtt.readData();
+					ExamFrame2.main(null,"same");
 				else if(s=="E-Mail")
 					FileMails.readData();
 			}
 		});
 		btnExistFile.setBounds(148, 141, 115, 25);
 		frame.getContentPane().add(btnExistFile);
-		
+
 		JButton btnNewFile = new JButton("New File");
 		btnNewFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
-//				NewList.main(null, s);
+				//				NewList.main(null, s);
 				if(s=="Att") 
 					ListNew.main(null,s);
 				else if(s=="Marks")
 					ListNewM.main(null,s);
 				else if(s=="Exam")
-					ListNew.main(null,s);
+					ExamFrame2.main(null,"new");
 				else if(s=="E-Mail")
 					ListNewE.main(null,s);
 			}
 		});
 		btnNewFile.setBounds(45, 141, 97, 25);
 		frame.getContentPane().add(btnNewFile);
-		
+
 		JLabel lblNewLabel = new JLabel("Select file");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		lblNewLabel.setBounds(12, 94, 150, 30);

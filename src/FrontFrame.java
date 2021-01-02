@@ -1,4 +1,4 @@
-       import java.awt.EventQueue;
+import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -49,25 +49,25 @@ public class FrontFrame {
 		frame.setBounds(100, 100, 600, 275);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JLabel lblNewLabel = new JLabel("Welcome");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lblNewLabel.setToolTipText("");
 		lblNewLabel.setBounds(161, 13, 230, 50);
 		lblNewLabel.setHorizontalAlignment(0);
 		frame.getContentPane().add(lblNewLabel);
-		
+
 		JButton btnAttendanceList = new JButton("Attendance list");
 		btnAttendanceList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null, "Namaste");
-			frame.dispose();
-			FileFrame.main(null,"Att");
+				//JOptionPane.showMessageDialog(null, "Namaste");
+				frame.dispose();
+				FileFrame.main(null,"Att");
 			}
 		});
 		btnAttendanceList.setBounds(55, 115, 125, 25);
 		frame.getContentPane().add(btnAttendanceList);
-		
+
 		JButton btnMarksList = new JButton("Marks list");
 		btnMarksList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -77,7 +77,7 @@ public class FrontFrame {
 		});
 		btnMarksList.setBounds(175, 115, 125, 25);
 		frame.getContentPane().add(btnMarksList);
-		
+
 		JButton btnExamQualification = new JButton("Exam Qualification");
 		btnExamQualification.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -87,7 +87,7 @@ public class FrontFrame {
 		});
 		btnExamQualification.setBounds(295, 115, 145, 25);
 		frame.getContentPane().add(btnExamQualification);
-		
+
 		JButton btnEMail = new JButton("E-mail");
 		btnEMail.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -97,7 +97,7 @@ public class FrontFrame {
 		});
 		btnEMail.setBounds(435, 115, 100, 25);
 		frame.getContentPane().add(btnEMail);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Select the required Function that you want to perform");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel_1.setBounds(55, 58, 480, 32);

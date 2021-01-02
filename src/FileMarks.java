@@ -1,10 +1,7 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
-
 import javax.swing.JFileChooser;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -13,12 +10,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileMarks {
 	public static String[][] details = new String[50][50];
-	public static String[] Headings = null;
-	static File output;
-	static File  input;
-	static String Loc;
-	private static XSSFWorkbook inbook;
-	private static Cell cells;
+	public static String[] percentages = new String[50];
+	public static File output;
+	public static File  input;
+	public static File update;
+	public static String Loc;
+	public static XSSFWorkbook inbook;
+	public static Cell cells;
+	public static XSSFWorkbook upbook;
+	public static int i,j,nr,nc,np,pcount;
+
 	public static void main(String[] args) {
 		makeData();
 	}
@@ -26,8 +27,8 @@ public class FileMarks {
 	@SuppressWarnings("resource")
 	public static void makeData() {
 
-		XSSFWorkbook book = new XSSFWorkbook();
-		XSSFSheet sheet = book.createSheet("Sheet1");
+		XSSFWorkbook inbook = new XSSFWorkbook();
+		XSSFSheet sheet = inbook.createSheet("Sheet1");
 		XSSFRow row;
 		int i,j,n,ns;
 		row = sheet.createRow(0);
@@ -48,9 +49,11 @@ public class FileMarks {
 			cellsub.setCellValue(subjects[i]);
 		}
 
+		ns = ListNewM.getNoSubs()+3; 
+
 		for(i=0;i<n;i++) {
 			row = sheet.createRow(i+1);
-			for(j=0;j<3;j++) {
+			for(j=0;j<ns;j++) {
 				Cell cell = row.createCell(j);
 				if(cell.getColumnIndex()==0)
 					cell.setCellValue(i+1);
@@ -58,16 +61,18 @@ public class FileMarks {
 					cell.setCellValue(names[i]);
 				else if(cell.getColumnIndex()==2)
 					cell.setCellValue(USNs[i]);
+				else if(cell.getColumnIndex()>=3)
+					cell.setCellValue("0.0");
 			}
 		}
 		JFileChooser sf = new JFileChooser();
-		sf.setDialogTitle("save as");
+		sf.setDialogTitle("Save as");
 		sf.setSelectedFile(new File(".xlsx"));
 		if(sf.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File output = sf.getSelectedFile();
 			Loc = output.getPath();
 			try(FileOutputStream out = new FileOutputStream(output)){
-				book.write(out);
+				inbook.write(out);
 				out.close();
 
 			} catch (FileNotFoundException e) {
@@ -76,60 +81,67 @@ public class FileMarks {
 				e.printStackTrace();
 			}
 		}
-		MarksFrame2.main(null, Loc);
+		FileMarks.readData();
 	}
 
 	public static void readData() {
 
-		int i,j,nr,nc,ncv;
-		nc=0;
-		String Headings[] = new String[50];
 
 		JFileChooser Sf = new JFileChooser();
-		Sf.setDialogTitle("save as");
+		Sf.setDialogTitle("Select File");
 		Sf.setSelectedFile(new File(".xlsx"));
 		if(Sf.showOpenDialog(null)   == JFileChooser.APPROVE_OPTION) {
 			input = Sf.getSelectedFile();
 			Loc = input.getPath();
-			try(FileInputStream in = new FileInputStream(input)) {
-
-				inbook = new XSSFWorkbook(in);
-				XSSFSheet sheet = inbook.getSheetAt(0);
-				nr=sheet.getPhysicalNumberOfRows();
-				XSSFRow row = sheet.getRow(0);
-				ncv= row.getPhysicalNumberOfCells();
-				Iterator<Cell> cellIt = row.iterator();
-
-				while(cellIt.hasNext()) {
-					cells = cellIt.next();
-					Headings[nc] = cells.toString();
-					nc++;
-
-				}
-				String[][] details = new String[50][50];
-				for(i=1;i<nr;i++) {
-					XSSFRow rows = sheet.getRow(i);
-					for(j=0;j<ncv;j++) {
-						Cell cell = rows.getCell(j);
-						details[i][j] = cell.toString();
-					}
-				}
-				//			}
-				inbook.close();
-				in.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			readMyFiles.main(null, Loc);
+			details = readMyFiles.fdetails;
+			nr = readMyFiles.nr;
+			nc = readMyFiles.ncv;
 		}
 		MarksFrame2.main(null, Loc);
 	}
-	public static String[] getHeadings() {
-		return Headings;
+
+	public static void writeData(String[][] updates,String upLoc) {
+
+		upbook = new XSSFWorkbook();
+		XSSFSheet sheet = upbook.createSheet("Sheet1");
+		XSSFRow wrow;
+		int i,j,nr,nc;
+		nr = MarksFrame2.r;
+		nc = MarksFrame2.c;
+
+
+		for(i=0;i<nr;i++) {
+			wrow = sheet.createRow(i);
+			for(j=0;j<nc;j++) {
+				Cell wcell = wrow.createCell(j);
+				wcell.setCellValue(updates[i][j]);
+			}
+		}
+
+		update = new File(upLoc);
+		try(FileOutputStream up = new FileOutputStream(update)){
+			upbook.write(up);
+			up.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String[] getpercentages() {
+		return percentages;
 	}
 	public static String[][] getDetails() {
 		return details;
+	}
+	public static int getnr() {
+		return nr;
+	}
+	public static int getnc() {
+		return nc;
 	}
 
 }

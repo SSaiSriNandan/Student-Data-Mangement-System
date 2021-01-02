@@ -41,11 +41,11 @@ public class ListNew {
 	 * Create the application.
 	 */
 	public ListNew(String s) {
-			initialize(s);
-		
+		initialize(s);
+
 	}
 
-	
+
 	private void initialize(String s) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 600, 450);
@@ -53,9 +53,9 @@ public class ListNew {
 		frame.setBackground(new Color(240, 240, 240));
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
-		
-		
-		
+
+
+
 		JButton btnHome = new JButton("Home");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -65,12 +65,12 @@ public class ListNew {
 		});
 		btnHome.setBounds(485, 378, 97, 25);
 		frame.getContentPane().add(btnHome);
-		
+
 		JLabel lblLabel = new JLabel("New List");
 		lblLabel.setFont(new Font("Tahoma", Font.BOLD, 26));
 		lblLabel.setBounds(10, 10, 300, 32);
 		frame.getContentPane().add(lblLabel);
-		
+
 		textFieldStuName = new JTextField();
 		textFieldStuName.setFont(new Font("Tahoma", Font.BOLD, 15));
 		textFieldStuName.addKeyListener(new KeyAdapter() {
@@ -79,14 +79,14 @@ public class ListNew {
 				if(evt1.getKeyCode() == KeyEvent.VK_TAB || evt1.getKeyCode() == KeyEvent.VK_ENTER) {
 					name[i] = textFieldStuName.getText();
 					textFieldUsn.requestFocus();
-					}
 				}
-			
+			}
+
 		});
 		textFieldStuName.setBounds(12, 123, 345, 32);
 		frame.getContentPane().add(textFieldStuName);
 		textFieldStuName.setColumns(10);
-		
+
 		textFieldUsn = new JTextField();
 		textFieldUsn.setFont(new Font("Tahoma", Font.BOLD, 15));
 		textFieldUsn.addKeyListener(new KeyAdapter() {
@@ -105,48 +105,48 @@ public class ListNew {
 		textFieldUsn.setBounds(369, 123, 201, 32);
 		frame.getContentPane().add(textFieldUsn);
 		textFieldUsn.setColumns(10);
-		
+
 		JLabel lblNewLabel = new JLabel("Student name");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
 		lblNewLabel.setBounds(12, 61, 184, 32);
 		frame.getContentPane().add(lblNewLabel);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("USN");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNewLabel_1.setBounds(369, 61, 125, 25);
 		frame.getContentPane().add(lblNewLabel_1);
-		
+
 		JLabel File = new JLabel("New label");
 		File.setFont(new Font("Tahoma", Font.BOLD, 12));
 		File.setBounds(320, 10, 250, 32);
 		frame.getContentPane().add(File);
 		File.setText(Loc);
-		
+
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//JOptionPane.showMessageDialog(null, s);
 				frame.dispose();
 				FileFrame.main(null, s);		
-				}
+			}
 		});
 		btnBack.setBounds(385, 378, 97, 25);
 		frame.getContentPane().add(btnBack);
-		
-		
-		
+
+
+
 		JButton btnNext = new JButton("Create");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				frame.dispose();
 				FileAtt.makeData();
-				
+
 			}
 		});
 		btnNext.setBounds(12, 365, 97, 25);
 		frame.getContentPane().add(btnNext);
-		
+
 		JLabel lblSubject = new JLabel("Dates");
 		lblSubject.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblSubject.setBounds(10, 168, 125, 32);
@@ -167,7 +167,7 @@ public class ListNew {
 		textFieldDates.setColumns(10);
 		textFieldDates.setBounds(10, 203, 250, 32);
 		frame.getContentPane().add(textFieldDates);
-				
+
 	}
 	public static String[] getName() {
 		return name;
@@ -182,6 +182,7 @@ public class ListNew {
 		return dates;
 	}
 	public static int getNodates() {
-		return dats;
+		System.out.println(dats);
+		return dats-1;
 	}
 }

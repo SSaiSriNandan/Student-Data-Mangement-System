@@ -3,15 +3,13 @@ import javax.swing.filechooser.*;
 
 
 public class FileTypeFilter extends FileFilter {
-	
+
 	private final String extention;
 	private final String description;
-	
+
 	public FileTypeFilter(String extention, String description ) {
-		
 		this.extention = extention;
 		this.description = description;
-		
 	}
 
 	@Override
@@ -24,8 +22,7 @@ public class FileTypeFilter extends FileFilter {
 
 	@Override
 	public String getDescription() {
-		
+
 		return description + String.format("(*%s)", extention);
 	}
-
 }

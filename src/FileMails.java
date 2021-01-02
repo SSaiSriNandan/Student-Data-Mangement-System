@@ -1,10 +1,7 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
-
 import javax.swing.JFileChooser;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -12,22 +9,25 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileMails {
-	private static String[][] details = null;
-	private static String[] Headings = null;
-	static File output;
-	static File  input;
-	static String Loc;
-	private static XSSFWorkbook inbook;
-	private static Cell cells;
+	public static  String[][] details = new String[50][50];
+	public static  String[][] updates = new String[50][50];
+	public static File output;
+	public static File  input;
+	public static File update;
+	public static String Loc;
+	public static XSSFWorkbook inbook;
+	public static Cell cells;
+	public static XSSFWorkbook upbook;
+	public static int i,j,nr,nc,np,pcount;
+	private static XSSFRow wrow;
 	public static void main(String[] args) {
-		makeData();
+		readData();
 	}
 
 	public static void makeData() {
 
-		//			String path = "F:\\test.xlsx";
-		XSSFWorkbook book = new XSSFWorkbook();
-		XSSFSheet sheet = book.createSheet("Sheet1");
+		inbook = new XSSFWorkbook();
+		XSSFSheet sheet = inbook.createSheet("Sheet1");
 		XSSFRow row;
 		int i,j,n;
 		row = sheet.createRow(0);
@@ -38,17 +38,16 @@ public class FileMails {
 		cell0.setCellValue("Si.No.");
 		cell1.setCellValue("Student Name");
 		cell2.setCellValue("USN");
-		cell3.setCellValue("E-mail");
+		cell3.setCellValue("E-Mail Adrress");
 		String names[] = ListNewE.getName();
 		String USNs[] = ListNewE.getUsn();
-		String Mails[] = ListNewE.getMail(); 
+		String mails[] = ListNewE.getMail();
 		n = ListNewE.getN();
-		
-		
+
 
 		for(i=0;i<n;i++) {
 			row = sheet.createRow(i+1);
-			for(j=0;j<3;j++) {
+			for(j=0;j<4;j++) {
 				Cell cell = row.createCell(j);
 				if(cell.getColumnIndex()==0)
 					cell.setCellValue(i+1);
@@ -57,31 +56,17 @@ public class FileMails {
 				else if(cell.getColumnIndex()==2)
 					cell.setCellValue(USNs[i]);
 				else if(cell.getColumnIndex()==3)
-					cell.setCellValue(Mails[i]);
-				
+					cell.setCellValue(mails[i]);
 			}
 		}
-		//			try {
-		//				FileOutputStream out = new FileOutputStream("data.xlsx");
-		//				book.write(out);
-		//				out.close();
-		//				System.out.println("done");
-		//			} catch (FileNotFoundException e) {
-		//				e.printStackTrace();
-		//				System.out.println("no");
-		//			} catch (IOException e) {
-		//				e.printStackTrace();
-		//				System.out.println("no");
-		//
-		//			}
 		JFileChooser sf = new JFileChooser();
-		sf.setDialogTitle("save as");
+		sf.setDialogTitle("Save as");
 		sf.setSelectedFile(new File(".xlsx"));
 		if(sf.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-			File output = sf.getSelectedFile();
+			output = sf.getSelectedFile();
 			Loc = output.getPath();
 			try(FileOutputStream out = new FileOutputStream(output)){
-				book.write(out);
+				inbook.write(out);
 				out.close();
 
 			} catch (FileNotFoundException e) {
@@ -90,72 +75,63 @@ public class FileMails {
 				e.printStackTrace();
 			}
 		}
-		EmailFrame2.main(null, Loc);
+		FileMails.readData();
 	}
-	
-public static void readData() {
-		
-		int i,j,nr,nc,ncv;
+
+	public static void readData() {
+
+
 		nc=0;
-		String Headings[] = new String[50];
 
 		JFileChooser Sf = new JFileChooser();
-		Sf.setDialogTitle("save as");
+		Sf.setDialogTitle("Select file");
 		Sf.setSelectedFile(new File(".xlsx"));
 		if(Sf.showOpenDialog(null)   == JFileChooser.APPROVE_OPTION) {
 			input = Sf.getSelectedFile();
 			Loc = input.getPath();
-		try(FileInputStream in = new FileInputStream(input)) {
-			
-			inbook = new XSSFWorkbook(in);
-			XSSFSheet sheet = inbook.getSheetAt(0);
-			nr=sheet.getPhysicalNumberOfRows();
-//			Iterator<Row> rowIt = sheet.iterator();
-//			
-//			while(rowIt.hasNext()) {
-//				Row row = rowIt.next();
-				XSSFRow row = sheet.getRow(0);
-				ncv= row.getPhysicalNumberOfCells();
-				Iterator<Cell> cellIt = row.iterator();
-				
-				while(cellIt.hasNext()) {
-					cells = cellIt.next();
-					Headings[nc] = cells.toString();
-					nc++;
-					System.out.println(cells.toString()+";");
-					
-				}
-//				System.out.println(nc);
-				System.out.println(ncv);
-				System.out.println(nr);
-				String[][] details = new String[50][50];
-				for(i=1;i<nr;i++) {
-					XSSFRow rows = sheet.getRow(i);
-					for(j=0;j<ncv;j++) {
-						Cell cell = rows.getCell(j);
-						details[i][j] = cell.toString();
-					}
-				}
-//			}
-			inbook.close();
-			in.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		
+			readMyFiles.main(null, Loc);
+			details = readMyFiles.fdetails;
+			nr = readMyFiles.nr;
+			nc = readMyFiles.ncv;
+
 		}
 		EmailFrame2.main(null, Loc);
 	}
-	public static String[] getHeadings() {
-		return Headings;
+
+	public static void writeData() {
+
+		upbook = new XSSFWorkbook();
+		XSSFSheet wsheet = upbook.createSheet("Sheet1");
+		int i,j,wnr,wnc;
+		wnr = SendMail.r;
+		wnc = SendMail.c;
+		updates = SendMail.updates;
+		String upLoc = SendMail.upLoc;
+
+
+		for(i=0;i<wnr;i++) {
+			wrow = wsheet.createRow(i);
+			for(j=0;j<wnc;j++) {
+				Cell wcell = wrow.createCell(j);
+				wcell.setCellValue(updates[i][j]);
+			}
+		}
+
+		update = new File(upLoc);
+		try(FileOutputStream up = new FileOutputStream(update)){
+			upbook.write(up);
+			up.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+
+
 	public static String[][] getDetails() {
 		return details;
 	}
+
 }
-
-
-

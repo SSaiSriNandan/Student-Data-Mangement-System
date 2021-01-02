@@ -1,9 +1,7 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import javax.swing.JFileChooser;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -11,14 +9,17 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileAtt {
-	public static String[][] details = new String[50][50];
-	public static String[] Headings = null;
-	static File output;
-	static File  input;
-	static String Loc;
-	private static XSSFWorkbook inbook;
-	private static Cell cells;
-	private static XSSFWorkbook book;
+	public static  String[][] details = new String[50][50];
+	public static String[] percentages = new String[50];
+	public static String[] percentage = new String[50];
+	public static File output;
+	public static File  input;
+	public static File update;
+	public static String Loc;
+	public static XSSFWorkbook inbook;
+	public static Cell cells;
+	public static XSSFWorkbook book;
+	public static int i,j,nr,nc,np,pcount;
 	public static void main(String[] args) {
 		readData();
 	}
@@ -28,7 +29,7 @@ public class FileAtt {
 		book = new XSSFWorkbook();
 		XSSFSheet sheet = book.createSheet("Sheet1");
 		XSSFRow row;
-		int i,j,n,ns;
+		int i,j,n,ns,nd;
 		row = sheet.createRow(0);
 		Cell cell0 = row.createCell(0); 
 		Cell cell1 = row.createCell(1);
@@ -47,11 +48,11 @@ public class FileAtt {
 			cellsub.setCellValue(dates[i]);
 		}
 		n = ListNew.getN();
-		
+		nd = ListNew.getNodates()+3;
 
 		for(i=0;i<n;i++) {
 			row = sheet.createRow(i+1);
-			for(j=0;j<3;j++) {
+			for(j=0;j<nd;j++) {
 				Cell cell = row.createCell(j);
 				if(cell.getColumnIndex()==0)
 					cell.setCellValue(i+1);
@@ -59,10 +60,12 @@ public class FileAtt {
 					cell.setCellValue(names[i]);
 				else if(cell.getColumnIndex()==2)
 					cell.setCellValue(USNs[i]);
+				else if(cell.getColumnIndex()>=3)
+					cell.setCellValue("0.0");
 			}
 		}
 		JFileChooser sf = new JFileChooser();
-		sf.setDialogTitle("save as");
+		sf.setDialogTitle("Save as");
 		sf.setSelectedFile(new File(".xlsx"));
 		if(sf.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			output = sf.getSelectedFile();
@@ -77,60 +80,75 @@ public class FileAtt {
 				e.printStackTrace();
 			}
 		}
-		AttendenceFrame2.main(null, Loc);
+		FileAtt.readData();
 	}
 
 	public static void readData() {
 
-		int i,j,nr,nc,ncv;
+
 		nc=0;
-		String Headings[] = new String[50];
 
 		JFileChooser Sf = new JFileChooser();
-		Sf.setDialogTitle("save as");
+		Sf.setDialogTitle("Select file");
 		Sf.setSelectedFile(new File(".xlsx"));
 		if(Sf.showOpenDialog(null)   == JFileChooser.APPROVE_OPTION) {
 			input = Sf.getSelectedFile();
 			Loc = input.getPath();
-			try(FileInputStream in = new FileInputStream(input)) {
-
-				inbook = new XSSFWorkbook(in);
-				XSSFSheet sheet = inbook.getSheetAt(0);
-				nr=sheet.getPhysicalNumberOfRows();
-				XSSFRow row = sheet.getRow(0);
-				ncv= row.getPhysicalNumberOfCells();
-				Iterator<Cell> cellIt = row.iterator();
-
-				while(cellIt.hasNext()) {
-					cells = cellIt.next();
-					Headings[nc] = cells.toString();
-					nc++;
-
+			readMyFiles.main(null, Loc);
+			details = readMyFiles.fdetails;
+			nr = readMyFiles.nr;
+			nc = readMyFiles.ncv;
+			np = nc - 3;
+			for(i=1;i<nr;i++) {
+				pcount = 0;
+				for(j=3;j<nc;j++) {
+					if(Double.valueOf(details[i][j]) == 1 )
+						pcount++;
 				}
-				String[][] details = new String[50][50];
-				for(i=1;i<nr;i++) {
-					XSSFRow rows = sheet.getRow(i);
-					for(j=0;j<ncv;j++) {
-						Cell cell = rows.getCell(j);
-						details[i][j] = cell.toString();
-					}
-				}
-				//			}
-				inbook.close();
-				in.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+				if(np>0)
+					percentage[i] = String.valueOf(100*pcount/np) ; 
+				percentages[i] =percentage[i]+"%";
 			}
+
 		}
 		AttendenceFrame2.main(null, Loc);
 	}
-	public static String[] getHeadings() {
-		return Headings;
+
+	public static void writeData(String[][] updates,String upLoc) {
+
+		book = new XSSFWorkbook();
+		XSSFSheet sheet = book.createSheet("Sheet1");
+		XSSFRow row;
+		int i,j,wnr,wnc;
+		wnr = AttendenceFrame2.r;
+		wnc = AttendenceFrame2.c;
+
+
+		for(i=0;i<wnr;i++) {
+			row = sheet.createRow(i);
+			for(j=0;j<wnc;j++) {
+				Cell cell = row.createCell(j);
+				cell.setCellValue(updates[i][j]);
+			}
+		}
+
+		update = new File(upLoc);
+		try(FileOutputStream up = new FileOutputStream(update)){
+			book.write(up);
+			up.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+
 	public static String[][] getDetails() {
 		return details;
+	}
+	public static String[] getpercent() {
+		return percentages;
 	}
 
 }
